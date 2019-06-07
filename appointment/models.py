@@ -27,7 +27,7 @@ class Doctor(models.Model):
 
 class Reception(models.Model):
     """ Модель рецепшена """
-    to_doc = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    to_doc = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='records')
     date = models.DateTimeField(default=timezone.now, help_text='Время и дата записи', verbose_name='Время')
     pacient_fio = models.CharField(max_length=128, help_text='ФИО пациента', verbose_name='ФИО')
 

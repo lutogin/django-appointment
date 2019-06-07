@@ -17,7 +17,8 @@ class ReceptionForm(forms.Form):
     )
     date = forms.DateTimeField(
         widget=forms.SelectDateWidget(),
-        label='Выберите дату приема'
+        label='Выберите дату приема',
+
     )
     time = forms.IntegerField(
         min_value=8,

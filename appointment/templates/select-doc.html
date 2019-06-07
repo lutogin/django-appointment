@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Выбор врача{% endblock %}
+
+{% block content %}
+  <h3>К какому врачу нужно записаться</h3>
+  <ul>
+    {% for doctor in doctors %}
+      <li><a href="/doc?doc_id={{ doctor.id }}">{{ doctor.last_name }} {{ doctor.first_name }}</a> (Время приема: {{ doctor.start_work_time }}-{{ doctor.end_work_time }})</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -3,5 +3,56 @@
 {% block title %}Ресепшн{% endblock %}
 
 {% block content %}
-  {{ form.as_p }}
+  <form action="/add-record" method="post">
+    {% csrf_token %}
+
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">ФИО</span>
+      </div>
+      <input type="text" class="form-control" name="fio" placeholder="Введите ваше ФИО" required>
+    </div>
+
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Выберите дату приема</span>
+      </div>
+      <input type="date" class="form-control" name="date" placeholder="Выберите дату посещения" required>
+    </div>
+
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Выберите время приема</span>
+      </div>
+      <input
+          name="time"
+          class="form-control"
+          type="time"
+          min="0{{ current_doc.start_work_time }}"
+          max="{{ end_work_time }}"
+          step="3600"
+          list="time"
+          required>
+    </div>
+    <button type="submit">Записаться</button>
+  </form>
+
+  <div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Уже имеющиеся записи к {{ current_doc.last_name }} {{ current_doc.first_name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in doc_records %}
+        <tr>
+          <th scope="row">1</th>
+          <td>{{ record.date }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
 {% endblock %}
