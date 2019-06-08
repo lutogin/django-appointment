@@ -5,6 +5,7 @@
 {% block content %}
   <form action="/add-record" method="post">
     {% csrf_token %}
+    <input type="hidden" name="doc_id" value="{{ current_doc.id }}">
 
     <div class="input-group">
       <div class="input-group-prepend">
@@ -34,21 +35,22 @@
           list="time"
           required>
     </div>
-    <button type="submit">Записаться</button>
+    <hr>
+    <div class="input-group">
+      <button type="submit" class="btn btn-primary">Записаться</button>
+    </div>
   </form>
-
+  <br>
   <div>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope="col">Уже имеющиеся записи к {{ current_doc.last_name }} {{ current_doc.first_name }}</th>
       </tr>
     </thead>
     <tbody>
       {% for record in doc_records %}
         <tr>
-          <th scope="row">1</th>
           <td>{{ record.date }}</td>
         </tr>
       {% endfor %}
