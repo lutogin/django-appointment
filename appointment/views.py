@@ -27,6 +27,7 @@ def make_record(req):
     но питон не может от времени отнять время просто так."""
     end_work_time = (datetime.combine(date(1, 1, 1), doc_query.end_work_time) - timedelta(hours=1)).time()
 
+    """Сформируем на вывод только те записи, которые еще актуальны"""
     all_record_to_doc = doc_query.records.in_bulk()
     filter_record = []
     for item, value in all_record_to_doc.items():
@@ -41,10 +42,9 @@ def make_record(req):
 
 
 def add_record(req):
-    from datetime import datetime, timedelta, date
+    import datetime as dt
     from django.http import HttpResponse
     from django.core.exceptions import ObjectDoesNotExist
-    from django.utils.formats import localize
 
     if req.method == 'POST':
         fio = req.POST.get('fio', False)
@@ -56,13 +56,17 @@ def add_record(req):
             return HttpResponse('Ошибка! Все поля формы обязательны')
 
         """Получим выбранную дату в формате datetime"""
-        record_date_time = datetime.strptime(record_date + ' ' + record_time, '%Y-%m-%d %H:%M')
+        record_date_time = dt.datetime.strptime(record_date + ' ' + record_time, '%Y-%m-%d %H:%M')
 
-        if datetime.now() > record_date_time:
-            return HttpResponse('Ошибка! Выбранная дата не должна быть в прошлом')
+        if dt.datetime.now() > record_date_time:
+            return HttpResponse('Ошибка! Выбранная дата не должна быть в прошлом.')
 
-        """Проверим, что в выбранную дату у врача нет записей"""
+        """Проверим введеное время на соответствие графика врача, и на свободное время"""
         curr_doc_query = Doctor.objects.get(id=doc_id)
+
+        if record_time > str((dt.datetime.combine(dt.date(1, 1, 1), curr_doc_query.end_work_time) - dt.timedelta(hours=1)).time())\
+                or record_time < str(curr_doc_query.start_work_time.strftime('%H:%M')):
+            return HttpResponse('Введеное время не соответствует времени работы врача.')
 
         try:
             result = curr_doc_query.records.get(date=record_date_time)

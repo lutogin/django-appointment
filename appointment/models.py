@@ -35,6 +35,6 @@ class Reception(models.Model):
         return 'Прием № %s' % self.id
 
     class Meta:
-        ordering = ['date']
+        ordering = ['-date']
         verbose_name_plural = 'Приемы'
         verbose_name = 'Прием'
