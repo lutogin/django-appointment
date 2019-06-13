@@ -53,7 +53,10 @@ def add_record(req):
         doc_id = req.POST.get('doc_id', False)
 
         if not fio or not record_date or not record_time:
-            return HttpResponse('Ошибка! Все поля формы обязательны')
+            return HttpResponse('Ошибка! Все поля формы обязательны.')
+
+        if int(record_time.split(':')[1]) != 00:
+            return HttpResponse('Вводимые значения записи только часы.')
 
         """Получим выбранную дату в формате datetime"""
         record_date_time = dt.datetime.strptime(record_date + ' ' + record_time, '%Y-%m-%d %H:%M')
@@ -76,6 +79,7 @@ def add_record(req):
         if result:
             return HttpResponse('На выбранное время уже есть запись')
 
+        """После валидации значение, запишем к врачу"""
         Reception.objects.create(to_doc=curr_doc_query, date=record_date_time, pacient_fio=fio)
 
     return render(req, 'done.html')
